@@ -6,16 +6,15 @@ end
 
 print "How many digits?: "
 digits = gets.to_i
-print "Precision: ", digits, "\n"
 
 pi = 0
-
-#### FOR LOOP
+#### FOR LOOP FOR SUMMATION OF bbpSingle
 0.upto(digits) do |i|
-	print i, " "
 	pi += bbpSingle(i)
 end
-print "\n"
 
+# Chop off pi to desired amount of digits
+# Note that the summation calculation is only accurate up to digits
+finalPi = (pi * 10.0**digits).floor / 10.0**digits
 
-print pi, "\n"
+print finalPi, "\n"
