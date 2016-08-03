@@ -14,9 +14,7 @@ end
 
 # Takes in list and sorts contents using insertion sort method. Outputs list
 def insertionSort(list)
-	totalSize = list.length
-	numSorted = 0
-	while numSorted < totalSize - 1					# Repeat until sorted sublist is the same length as whole list
+	totalSize = list.lengthis the same length as whole list
 		toBeSorted = list[numSorted + 1]			# Grab next unsorted element in list
 		0.upto(numSorted) do |i|					# Compare to each element in sorted list, starting from bottom
 			if list[i] > toBeSorted					# If element compared is bigger, put toBeSorted in index right below it
@@ -46,6 +44,8 @@ def selectionSort(list)
 				smallest = list[i]					# Record it
 				smallestIndex = i
 			end
+	numSorted = 0
+	while numSorted < totalSize - 1					# Repeat until sorted sublist 
 		end
 		list.delete_at(smallestIndex)				# Move smallest entry found to top of sublist
 		list.insert(numSorted, smallest)
