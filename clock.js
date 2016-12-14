@@ -1,70 +1,111 @@
 var canvas = document.getElementById("canvas");
-var pen = canvas.getContext("2d");
+var ctx = canvas.getContext("2d");
 var radius = canvas.height / 2;
-pen.translate(radius, radius);
+ctx.translate(radius, radius);
 radius = radius * 0.90;
-setInterval(drawClock, 1000);
+setInterval(drawClock, 500);
 
 function drawClock() {
-	drawFace(pen, radius);
-	drawNumbers(pen, radius);
-	drawTime(pen, radius);
+	drawFace(ctx, radius);
+	drawNumbers(ctx, radius);
+	drawTime(ctx, radius);
 }
 
-function drawFace(pen, radius) {
-	pen.arc(0, 0, radius, 0, 2*Math.PI);
-	pen.fillStyle = "white";
-	pen.fill();
+function drawFace(ctx, radius) {
+	// Draw rim of clock
+	ctx.arc(0, 0, radius, 0, 2*Math.PI);
+	ctx.fillStyle = "steelblue";
+	ctx.fill();
 
-	pen.beginPath();
-	pen.arc(0, 0, radius*0.1, 0, 2*Math.PI);
-	pen.fillStyle = "black";
-	pen.fill();
+	// Draw white face of clock over rim
+	ctx.beginPath();
+	ctx.arc(0, 0, radius*0.95, 0, 2*Math.PI);
+	ctx.fillStyle = "white"
+	ctx.fill();
+
+	// Draw central dot of clock where hands attach
+	ctx.beginPath();
+	ctx.arc(0, 0, radius*0.075, 0, 2*Math.PI);
+	ctx.fillStyle = "black";
+	ctx.fill();
 }
 
-function drawNumbers(pen, radius) {
+function drawNumbers(ctx, radius) {
 	var ang;
     var num;
-    pen.font = radius*0.15 + "px arial";
-    pen.textBaseline = "middle";
-    pen.textAlign = "center";
+    // Draw hour ticks
     for(num = 1; num < 13; num++) {
         ang = num * Math.PI / 6;
-        pen.rotate(ang);
-        pen.translate(0, -radius * 0.85);
-        pen.rotate(-ang);
-        pen.fillText(num.toString(), 0, 0);
-        pen.rotate(ang);
-        pen.translate(0, radius * 0.85);
-        pen.rotate(-ang);
+        ctx.rotate(ang);
+        ctx.strokeStyle = "black";
+        ctx.beginPath();
+        ctx.lineWidth = radius * 0.03;
+        ctx.lineCap = "round"
+        ctx.moveTo(0, radius * 0.80);
+        ctx.lineTo(0, radius * 0.90)
+        ctx.stroke();
+        ctx.rotate(-ang);
+    }
+    // Draw minute ticks
+    for(num = 1; num < 61; num++) {
+        ang = num * Math.PI / 30;
+        ctx.rotate(ang);
+        ctx.strokeStyle = "black";
+        ctx.beginPath();
+        ctx.lineWidth = radius * 0.01;
+        ctx.lineCap = "round"
+        ctx.moveTo(0, radius * 0.85);
+        ctx.lineTo(0, radius * 0.90)
+        ctx.stroke();
+        ctx.rotate(-ang);
     }
 }
 
-function drawTime(pen, radius) {
+function drawTime(ctx, radius) {
 	var now = new Date();
     var hour = now.getHours();
     var minute = now.getMinutes();
     var second = now.getSeconds();
-    //hour
+
+    // Get hour hand position and draw
     hour = hour % 12;
     hour = (hour * Math.PI/6) + (minute * Math.PI/(6 * 60)) + (second * Math.PI/(360 * 60));
-    drawHand(pen, hour, radius * 0.5, radius * 0.07);
-    //minute
+    drawMinuteHand(ctx, hour, radius * 0.5, radius * 0.07);
+    // Get minute hand position and draw
     minute = (minute * Math.PI/30) + (second * Math.PI/(30 * 60));
-    drawHand(pen, minute, radius * 0.8, radius * 0.07);
-    // second
+    drawMinuteHand(ctx, minute, radius * 0.8, radius * 0.07);
+    // Get second hand position and draw
     second = (second * Math.PI/30);
-    drawHand(pen, second, radius*0.9, radius*0.02);
+    drawSecondHand(ctx, second, radius*0.85, radius*0.02);
+
+    // Redraw second hand central dot over hands
+    ctx.beginPath();
+	ctx.arc(0, 0, radius*0.035, 0, 2*Math.PI);
+	ctx.fillStyle = "red";
+	ctx.fill();
 }
 
 
-function drawHand(pen, pos, length, width) {
-    pen.beginPath();
-    pen.lineWidth = width;
-    pen.lineCap = "round";
-    pen.moveTo(0,0);
-    pen.rotate(pos);
-    pen.lineTo(0, -length);
-    pen.stroke();
-    pen.rotate(-pos);
+function drawMinuteHand(ctx, pos, length, width) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.strokeStyle = "black";
+    ctx.lineCap = "round";
+    ctx.moveTo(0,0);
+    ctx.rotate(pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(-pos);
+}
+
+function drawSecondHand(ctx, pos, length, width) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.strokeStyle = "red";
+    ctx.lineCap = "round";
+    ctx.moveTo(0,0);
+    ctx.rotate(pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(-pos);
 }
